@@ -1,0 +1,14 @@
+void asignarSeccion() {
+    int a, s;
+    cout << "ID Alumno: "; cin >> a;
+    cout << "ID Seccion: "; cin >> s;
+
+    string q = "REPLACE INTO alumnos_seccion(alumno_id,seccion_id) VALUES(" +
+               to_string(a) + "," + to_string(s) + ")";
+
+    SQLHSTMT h;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &h);
+    SQLExecDirect(h, (SQLCHAR*)q.c_str(), SQL_NTS);
+
+    cout << "Seccion asignada\n";
+}
