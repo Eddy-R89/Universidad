@@ -1,0 +1,81 @@
+void listarAlumnos() {
+    SQLHSTMT hStmt;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+
+    SQLCHAR query[] =
+        "SELECT a.id, a.nombres, a.apellidos, a.carnet, "
+        "IFNULL(c.nombre,'Sin curso'), IFNULL(s.nombre,'Sin seccion') "
+        "FROM alumnos a "
+        "LEFT JOIN alumnos_cursos ac ON a.id = ac.alumno_id "
+        "LEFT JOIN cursos c ON ac.curso_id = c.id "
+        "LEFT JOIN alumnos_seccion ase ON a.id = ase.alumno_id "
+        "LEFT JOIN secciones s ON ase.seccion_id = s.id;";
+
+    SQLExecDirect(hStmt, query, SQL_NTS);
+
+    int id;
+    char nom[100], ape[100], car[50], curso[100], seccion[100];
+
+    while (SQLFetch(hStmt) == SQL_SUCCESS) {
+        SQLGetData(hStmt, 1, SQL_C_INT, &id, 0, NULL);
+        SQLGetData(hStmt, 2, SQL_C_CHAR, nom, sizeof(nom), NULL);
+        SQLGetData(hStmt, 3, SQL_C_CHAR, ape, sizeof(ape), NULL);
+        SQLGetData(hStmt, 4, SQL_C_CHAR, car, sizeof(car), NULL);
+        SQLGetData(hStmt, 5, SQL_C_CHAR, curso, sizeof(curso), NULL);
+        SQLGetData(hStmt, 6, SQL_C_CHAR, seccion, sizeof(seccion), NULL);
+
+        cout << id << " | " << nom << " | " << ape << " | " << car
+             << " | " << curso << " | " << seccion << endl;
+    }
+
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+}
+
+void insertarAlumno() {
+    string n, a, c;
+    cout << "Nombres: "; cin >> n;
+    cout << "Apellidos: "; cin >> a;
+    cout << "Carnet: "; cin >> c;
+
+    string q = "INSERT INTO alumnos(nombres, apellidos, carnet) VALUES('" +
+               n + "','" + a + "','" + c + "')";
+
+    SQLHSTMT hStmt;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+    SQLExecDirect(hStmt, (SQLCHAR*)q.c_str(), SQL_NTS);
+
+    cout << "Alumno agregado\n";
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+}
+
+void actualizarAlumno() {
+    int id;
+    string n;
+
+    cout << "ID: "; cin >> id;
+    cout << "Nuevo nombre: "; cin >> n;
+
+    string q = "UPDATE alumnos SET nombres='" + n +
+               "' WHERE id=" + to_string(id);
+
+    SQLHSTMT hStmt;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+    SQLExecDirect(hStmt, (SQLCHAR*)q.c_str(), SQL_NTS);
+
+    cout << "Actualizado\n";
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+}
+
+void eliminarAlumno() {
+    int id;
+    cout << "ID: "; cin >> id;
+
+    string q = "DELETE FROM alumnos WHERE id=" + to_string(id);
+
+    SQLHSTMT hStmt;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+    SQLExecDirect(hStmt, (SQLCHAR*)q.c_str(), SQL_NTS);
+
+    cout << "Eliminado\n";
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
+}
