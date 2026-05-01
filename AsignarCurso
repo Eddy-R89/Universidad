@@ -1,0 +1,14 @@
+void asignarCurso() {
+    int a, c;
+    cout << "ID Alumno: "; cin >> a;
+    cout << "ID Curso: "; cin >> c;
+
+    string q = "INSERT INTO alumnos_cursos(alumno_id,curso_id) VALUES(" +
+               to_string(a) + "," + to_string(c) + ")";
+
+    SQLHSTMT h;
+    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &h);
+    SQLExecDirect(h, (SQLCHAR*)q.c_str(), SQL_NTS);
+
+    cout << "Asignado\n";
+}
