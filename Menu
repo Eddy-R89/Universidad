@@ -1,0 +1,31 @@
+void menuAlumnos() {
+    int op;
+    do {
+        cout << "\n1.Listar\n2.Insertar\n3.Modificar\n4.Eliminar\n5.Regresar\n";
+        cin >> op;
+
+        switch(op) {
+            case 1: listarAlumnos(); break;
+            case 2: insertarAlumno(); break;
+            case 3: actualizarAlumno(); break;
+            case 4: eliminarAlumno(); break;
+        }
+
+    } while(op != 5);
+}
+
+void menuPrincipal() {
+    int op;
+    do {
+        cout << "\n===== UNIVERSIDAD =====\n";
+        cout << "1.Alumnos\n2.Asignar Curso\n3.Asignar Seccion\n4.Salir\n";
+        cin >> op;
+
+        switch(op) {
+            case 1: menuAlumnos(); break;
+            case 2: asignarCurso(); break;
+            case 3: asignarSeccion(); break;
+        }
+
+    } while(op != 4);
+}
